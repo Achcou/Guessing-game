@@ -1,0 +1,31 @@
+name: Generate README
+
+on:
+  push:
+    branches:
+      - main  # This means the action will run when you push to the 'main' branch
+  pull_request:
+    branches:
+      - main  # This also runs the action when you create a pull request to 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # This specifies the environment (Ubuntu Linux) where the workflow will run
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2  # This checks out your code so that GitHub Actions can work with it
+
+    - name: Set up Bash
+      uses: shivammathur/setup-bash@v1  # This step sets up a Bash environment for the workflow
+
+    - name: Run Makefile to generate README.md
+      run: make  # This runs the `make` command in your repository, which generates the README.md file
+
+    - name: Commit and push README.md
+      uses: EndBug/add-and-commit@v7  # This GitHub Action commits the changes (generated README.md)
+      with:
+        author_name: github-actions[bot]  # The commit will be made by GitHub Actions
+        author_email: github-actions[bot]@users.noreply.github.com
+        message: "Generate README.md"  # The commit message
+        add: "README.md"  # Specify that only the README.md file should be added to the commit
