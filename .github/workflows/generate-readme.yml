@@ -3,31 +3,28 @@ name: Generate README
 on:
   push:
     branches:
-      - main  # Trigger on push to main branch
-  pull_request:
-    branches:
-      - main  # Trigger on pull request to main branch
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # This runs on the latest Ubuntu image
-
+    runs-on: ubuntu-latest
+    
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2  # Checkout the code
+      uses: actions/checkout@v2
+      
+    - name: Set up Bash
+      uses: shivammathur/setup-bash@v2
+      
+    - name: Install Make
+      run: sudo apt-get install make
+      
+    - name: Run Make to generate README.md
+      run: make
 
-    - name: Show directory contents
-      run: |
-        pwd  # Print working directory
-        ls -al  # List all files to check if Makefile is present
-
-    - name: Run Makefile to generate README.md
-      run: make  # Run the Makefile
-
+    # Debug step to check README.md content after 'make' runs
+    - name: Debug Make Output
+      run: cat README.md
+      
     - name: Commit and push README.md
-      uses: EndBug/add-and-commit@v7  # Commit the generated README.md back to the repo
-      with:
-        author_name: github-actions[bot]  # The commit will be made by GitHub Actions
-        author_email: github-actions[bot]@users.noreply.github.com
-        message: "Generate README.md"  # Commit message
-        add: "README.md"  # Only add README.md to the commit
+      run: git add README.md && git commit -m "Generated README" && git push
